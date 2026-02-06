@@ -14,7 +14,6 @@ import com.bizflow.models.StoreContact;
 import com.bizflow.models.User;
 import com.bizflow.payloads.dto.StoreDto;
 import com.bizflow.repositories.StoreRepository;
-import com.bizflow.repositories.UserRepository;
 import com.bizflow.services.StoreService;
 import com.bizflow.services.UserService;
 
@@ -24,21 +23,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StoreServiceImplementation implements StoreService {
 
-    private final UserRepository userRepository;
-
 
 
 	private final StoreRepository storeRepository;
 	private final UserService userService;
+//	private final UserRepository userRepository;
+	
 
 
 	
 	@Override
 	public StoreDto createStore(StoreDto storeDto, User user) {
-		System.out.println("555555555555555555555555555555555555555555555555");
 
 		Store store = StoreMapper.toEntity(storeDto,user);
-		System.out.println(store);
+		
 		return StoreMapper.toDto(storeRepository.save(store));
 	}
 

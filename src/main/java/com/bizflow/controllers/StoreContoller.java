@@ -38,11 +38,7 @@ public class StoreContoller {
 	public ResponseEntity<StoreDto> createStore(@RequestBody StoreDto storeDto) throws UserException{
 		
 		User currentUser = userService.getCurrentUser();
-		System.out.println("-----------------------------------------------");
-		System.out.println(currentUser);
 		StoreDto createdStore = storeService.createStore(storeDto, currentUser);
-		System.out.println(createdStore);
-		System.out.println("====================================================");
 		return ResponseEntity.ok(createdStore);
 	}
 	
@@ -82,12 +78,8 @@ public class StoreContoller {
 	public ResponseEntity<ApiResponse> deleteStore(@PathVariable Long id) throws UserException{
 		storeService.deleteStore(id);
 		
-		return ResponseEntity.ok(new ApiResponse().builder()
-				.status(HttpStatus.OK)
-				.message("Store deleted sucessfully")
-				.timestamp(LocalDateTime.now())
-				.build()
-				);
+		return ResponseEntity.ok(new ApiResponse(HttpStatus.OK,"Store deleted sucessfully",LocalDateTime.now()
+				));
 	}
 	
 	

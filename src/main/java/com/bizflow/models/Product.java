@@ -6,64 +6,55 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.bizflow.constants.UserRole;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-public class User {
+@NoArgsConstructor
+@Builder
+@EntityListeners(AuditingEntityListener.class)
+public class Product {
+	
 	
 	@Id
-	 @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(nullable=false)
-	private String fullName;
+	@Column(nullable = false)
+	private String name;
 	
-	private String password;
+	@Column(nullable = false)
+	private String sku;
+	private String description;
+	private String mrp;
+	private String sellingPrice;
+	private String brand;
+	private String image;
 	
-	@Column(nullable = false,unique = true)
-	@Email(message = "Email should be valid")
-	private String email;
-	
-	private String phone;
+	@ManyToOne
+	private Category category;
 	
 	@ManyToOne
 	private Store store;
 	
-	
 	@CreationTimestamp
-	@Column(updatable = false)
 	private LocalDateTime createdAt;
 	
 	@UpdateTimestamp
-	private LocalDateTime updatedAt;
-	
-	private LocalDateTime lastLogin;
-	
-	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private UserRole role;
+	private LocalDateTime updateAt;
 	
 	
 	
