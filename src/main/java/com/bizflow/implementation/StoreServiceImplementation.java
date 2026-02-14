@@ -14,6 +14,7 @@ import com.bizflow.models.StoreContact;
 import com.bizflow.models.User;
 import com.bizflow.payloads.dto.StoreDto;
 import com.bizflow.repositories.StoreRepository;
+import com.bizflow.repositories.UserRepository;
 import com.bizflow.services.StoreService;
 import com.bizflow.services.UserService;
 
@@ -27,7 +28,7 @@ public class StoreServiceImplementation implements StoreService {
 
 	private final StoreRepository storeRepository;
 	private final UserService userService;
-//	private final UserRepository userRepository;
+	private final UserRepository userRepository;
 	
 
 
@@ -36,8 +37,10 @@ public class StoreServiceImplementation implements StoreService {
 	public StoreDto createStore(StoreDto storeDto, User user) {
 
 		Store store = StoreMapper.toEntity(storeDto,user);
-		
-		return StoreMapper.toDto(storeRepository.save(store));
+		Store savedStore = storeRepository.save(store);
+		user.setStore(store);
+		userRepository.save(user);
+		return StoreMapper.toDto(savedStore);
 	}
 
 	@Override

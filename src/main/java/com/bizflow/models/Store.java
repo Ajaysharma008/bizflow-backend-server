@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.bizflow.constants.StoreStatus;
 import com.bizflow.constants.StoreType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -52,6 +53,7 @@ public class Store {
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @JsonIgnore
     private User storeAdmin;
 
     @CreationTimestamp
@@ -65,7 +67,7 @@ public class Store {
     private StoreStatus storeStatus;
     
     @Embedded
-    private StoreContact storeContact = new StoreContact();
+    private StoreContact storeContact;
     
     @PrePersist
     protected void oncreateStore() {

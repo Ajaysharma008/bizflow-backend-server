@@ -7,5 +7,5 @@ import com.bizflow.models.Store;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long>{
-
+	Store findByStoreAdminId(Long adminId);
 }

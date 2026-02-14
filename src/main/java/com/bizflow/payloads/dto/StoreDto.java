@@ -13,6 +13,8 @@ public class StoreDto {
     private String brand;
     private String description;
     private StoreType storeType;
+    
+   
     private User storeAdmin = new User();
     private StoreContact storeContact;
 }
