@@ -17,7 +17,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -43,7 +42,6 @@ public class User {
 	private String password;
 	
 	@Column(nullable = false,unique = true)
-	@Email(message = "Email should be valid")
 	private String email;
 	
 	private String phone;
@@ -51,6 +49,8 @@ public class User {
 	@ManyToOne
 	private Store store;
 	
+	@ManyToOne
+	private Branch branch;
 	
 	@CreationTimestamp
 	@Column(updatable = false)
