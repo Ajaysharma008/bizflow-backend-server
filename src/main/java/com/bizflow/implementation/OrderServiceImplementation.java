@@ -1,6 +1,7 @@
 package com.bizflow.implementation;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import com.bizflow.models.OrderItem;
 import com.bizflow.models.Product;
 import com.bizflow.models.User;
 import com.bizflow.payloads.dto.OrderDto;
+import com.bizflow.repositories.OrderItemRepository;
 import com.bizflow.repositories.OrderRepository;
 import com.bizflow.repositories.ProductRepository;
 import com.bizflow.services.OrderService;
@@ -29,6 +31,7 @@ public class OrderServiceImplementation implements OrderService {
 	
 	private final OrderRepository orderRepository;
 	private final ProductRepository productRepository;
+	private final OrderItemRepository orderItemRepository;
 	private final UserService userService;
 	
 	@Override
@@ -45,16 +48,21 @@ public class OrderServiceImplementation implements OrderService {
 				.cashier(cashier)
 				.paymentType(orderDto.getPaymentType())
 				.build();
+		
+		
 		List<OrderItem> items = orderDto.getItems().stream()
 				.map(item ->{
 					Product product = productRepository.findById(item.getProductId()).orElseThrow(()-> new EntityNotFoundException("Product not found"));
-			    	return OrderItem.builder()
+			    	OrderItem orderItem = OrderItem.builder()
 			    			.quantity(item.getQuantity())
-			    			.product(product!=null?product:null)
+			    			.product(product)
 			    			.price(product.getSellingPrice()*item.getQuantity())
 			    			.order(order)
 			    			.build();
-							}
+							
+						return orderItemRepository.save(orderItem);
+						}
+						
 					).collect(Collectors.toList());
 		
 		double total = items.stream().mapToDouble(OrderItem::getPrice).sum();
@@ -108,8 +116,11 @@ public class OrderServiceImplementation implements OrderService {
 
 	@Override
 	public List<OrderDto> getTodayOrdersByBranch(Long branchId) throws Exception {
+		LocalDate today = LocalDate.now();
+		LocalDateTime start = today.atStartOfDay();
+		LocalDateTime end = today.plusDays(1).atStartOfDay();
 		
-		return orderRepository.findByBranchIdAndCreatedAtBetween(branchId, LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay()).stream()
+		return orderRepository.findByBranchIdAndCreatedAtBetween(branchId, start,end).stream()
 							.map(OrderMapper::toDto)
 							.collect(Collectors.toList());
 	}
@@ -117,13 +128,17 @@ public class OrderServiceImplementation implements OrderService {
 	@Override
 	public List<OrderDto> getOrdersByCustomerId(Long customerId) throws Exception {
 		
-		return null;
+		return orderRepository.findByCustomerId(customerId).stream()
+				.map(OrderMapper::toDto)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<OrderDto> getTop5RecentOrdersByBranchById(Long branchId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return orderRepository.findTop5ByBranchIdOrderByCreatedAtDesc(branchId).stream()
+				.map(OrderMapper::toDto)
+				.collect(Collectors.toList());
 	}
 
 }
